@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeChef Template Paster</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h2>CodeChef Template Paster</h2>
+        
+        <div class="section">
+            <label for="lang">Select Language:</label>
+            <select id="lang">
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+                <option value="c">C</option>
+            </select>
+        </div>
+
+        <div class="section">
+            <label for="code">Template Code:</label>
+            <textarea id="code" placeholder="Enter your template code here..."></textarea>
+        </div>
+
+        <div class="buttons">
+            <button id="save">Save Template</button>
+            <button id="clear">Clear</button>
+        </div>
+
+        <div class="section">
+            <label>
+                <input type="checkbox" id="automode"> Auto-paste when CodeChef loads
+            </label>
+        </div>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
