@@ -1,95 +1,91 @@
+
 document.addEventListener('DOMContentLoaded', function() {
-    const lang = document.getElementById('lang');
-    const code = document.getElementById('code');
-    const saveBtn = document.getElementById('save');
-    const clearBtn = document.getElementById('clear');
-    const autoMode = document.getElementById('automode');
-    const status = document.getElementById('status');
+    const languageDropdown = document.getElementById('lang');
+    const codeArea = document.getElementById('code');
+    const saveButton = document.getElementById('save');
+    const clearButton = document.getElementById('clear');
+    const autoPasteCheckbox = document.getElementById('automode');
+    const statusBox = document.getElementById('status');
 
-    loadTemplate();
-    loadSettings();
+    loadUserTemplate();
+    loadAutoPasteSetting();
 
-    // Event listeners
-    saveBtn.addEventListener('click', save);
-    clearBtn.addEventListener('click', clear);
-    autoMode.addEventListener('change', saveSettings);
+    saveButton.addEventListener('click', saveTemplate);
+    clearButton.addEventListener('click', clearTemplate);
+    autoPasteCheckbox.addEventListener('change', saveAutoPasteSetting);
 
-    function showStatus(msg, type = 'info') {
-        status.textContent = msg;
-        status.className = `status ${type}`;
+    function showStatusMessage(message, type = 'info') {
+        statusBox.textContent = message;
+        statusBox.className = `status ${type}`;
         setTimeout(() => {
-            status.style.display = 'none';
+            statusBox.style.display = 'none';
         }, 3000);
     }
 
-    function save() {
-        const l = lang.value;
-        const c = code.value.trim();
-
-        if (!c) {
-            showStatus('Please enter template code', 'error');
+    function saveTemplate() {
+        const selectedLanguage = languageDropdown.value;
+        const templateCode = codeArea.value.trim();
+        if (!templateCode) {
+            showStatusMessage('Please enter template code', 'error');
             return;
         }
-
         const template = {
             id: 'default',
-            language: l,
-            code: c,
+            language: selectedLanguage,
+            code: templateCode,
             createdAt: new Date().toISOString()
         };
-
         chrome.storage.sync.set({ template: template }, function() {
-            showStatus('Template saved successfully!', 'success');
+            showStatusMessage('Template saved successfully!', 'success');
         });
     }
 
-    function loadTemplate() {
+    function loadUserTemplate() {
         chrome.storage.sync.get(['template'], function(result) {
             if (result.template) {
-                lang.value = result.template.language;
-                code.value = result.template.code;
+                languageDropdown.value = result.template.language;
+                codeArea.value = result.template.code;
             }
         });
     }
 
-    function clear() {
-        code.value = '';
-        showStatus('Template cleared', 'info');
+    function clearTemplate() {
+        codeArea.value = '';
+        showStatusMessage('Template cleared', 'info');
     }
 
-    function saveSettings() {
-        chrome.storage.sync.set({ autoMode: autoMode.checked });
+    function saveAutoPasteSetting() {
+        chrome.storage.sync.set({ autoMode: autoPasteCheckbox.checked });
     }
 
-    function loadSettings() {
+    function loadAutoPasteSetting() {
         chrome.storage.sync.get(['autoMode'], function(result) {
-            autoMode.checked = result.autoMode || false;
+            autoPasteCheckbox.checked = result.autoMode || false;
         });
     }
 
-    // Auto-save template as user types
-    code.addEventListener('input', function() {
-        const l = lang.value;
-        const c = code.value;
-        if (c.trim()) {
+    codeArea.addEventListener('input', function() {
+        const selectedLanguage = languageDropdown.value;
+        const templateCode = codeArea.value;
+        if (templateCode.trim()) {
             const template = {
                 id: 'default',
-                language: l,
-                code: c,
+                language: selectedLanguage,
+                code: templateCode,
                 createdAt: new Date().toISOString()
             };
             chrome.storage.sync.set({ template: template });
         }
     });
 
-    lang.addEventListener('change', function() {
-        const l = lang.value;
-        const c = code.value;
-        if (c.trim()) {
+    languageDropdown.addEventListener('change', function() {
+        const selectedLanguage = languageDropdown.value;
+        const templateCode = codeArea.value;
+        if (templateCode.trim()) {
             const template = {
                 id: 'default',
-                language: l,
-                code: c,
+                language: selectedLanguage,
+                code: templateCode,
                 createdAt: new Date().toISOString()
             };
             chrome.storage.sync.set({ template: template });
